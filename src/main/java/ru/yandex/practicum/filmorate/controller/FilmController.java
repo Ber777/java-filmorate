@@ -68,6 +68,7 @@ public class FilmController {
         log.info("Фильм id:{} был обновлен: {}", copyFilm.getId(), copyFilm);
         return copyFilm;
     }
+
     private void validate(Film film) throws ValidationException {
         validateReleaseDate(film.getReleaseDate());
     }
