@@ -64,11 +64,15 @@ public class FilmController {
         if (film.getReleaseDate() != null)
             copyFilm.setReleaseDate(film.getReleaseDate());
 
-        films.put(film.getId(), film);
+        // Согласен, складировать необходимо copyFilm:
+        //films.put(film.getId(), film);
+        films.put(copyFilm.getId(), copyFilm);
         log.info("Фильм id:{} был обновлен: {}", copyFilm.getId(), copyFilm);
         return copyFilm;
     }
 
+    // По комментарию о не полной валидации:
+    // Остальная валидация присутсвует в классах Film, User в качестве аннотаций
     private void validate(Film film) throws ValidationException {
         validateReleaseDate(film.getReleaseDate());
     }

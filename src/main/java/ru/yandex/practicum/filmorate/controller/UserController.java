@@ -61,7 +61,7 @@ public class UserController {
         if (user.getBirthday() != null)
             copyUser.setBirthday(user.getBirthday());
 
-        users.put(user.getId(), user);
+        users.put(copyUser.getId(), copyUser);
         log.info("Пользователь id:{} был обновлен: {}", copyUser.getId(), copyUser);
         return copyUser;
     }
