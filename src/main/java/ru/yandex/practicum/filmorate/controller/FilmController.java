@@ -64,7 +64,7 @@ public class FilmController {
         if (film.getReleaseDate() != null)
             copyFilm.setReleaseDate(film.getReleaseDate());
 
-        // Согласен, складировать необходимо copyFilm:
+        // Согласен, складировать необходимо copyFilm, спасибо:
         //films.put(film.getId(), film);
         films.put(copyFilm.getId(), copyFilm);
         log.info("Фильм id:{} был обновлен: {}", copyFilm.getId(), copyFilm);
