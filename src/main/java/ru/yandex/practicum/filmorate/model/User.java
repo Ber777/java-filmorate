@@ -1,17 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Data;
 import jakarta.validation.constraints.*;
-
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * User.
  */
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class User {
@@ -36,4 +36,21 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @PastOrPresent(message = "Дата рождения не может быть в будущем", groups = Create.class)
     private LocalDate birthday;
+
+    private Set<Long> friends = new HashSet<>();
+
+    /* вынесли на уровень сервиса
+    public void addFriend(Long id) {
+        if (!friends.add(id))
+            throw new FriendExistsException(this.id, id);
+    }
+
+    public void removeFriend(Long id) {
+        friends.remove(id);
+    }
+
+    public void clearFriends() {
+        friends.clear();
+    }
+     */
 }
