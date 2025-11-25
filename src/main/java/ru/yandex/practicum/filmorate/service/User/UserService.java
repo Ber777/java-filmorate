@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service.User;
 
+import ru.yandex.practicum.filmorate.exception.FriendExistsException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
-
     public Collection<User> getAllUsers() {
         return userStorage.getAllUsers();
     }
@@ -24,7 +24,8 @@ public class UserService {
     }
 
     public User create(User user) {
-        user.clearFriends();
+        //user.clearFriends();
+        user.getFriends().clear();
         return userStorage.create(user);
     }
 
@@ -43,6 +44,10 @@ public class UserService {
         if (user.getLogin() != null)
             updatedUser.setLogin(user.getLogin());
 
+        // Чтобы не потерять друзей:
+        if (user.getFriends() != null)
+            updatedUser.setFriends(user.getFriends());
+
         return userStorage.update(updatedUser);
     }
 
@@ -53,16 +58,24 @@ public class UserService {
         User user = userStorage.getUser(id);
         User friend = userStorage.getUser(friendId);
 
-        user.addFriend(friendId);
-        friend.addFriend(id);
+        if (!user.getFriends().add(friendId))
+            throw new FriendExistsException(id, friendId);
+        //user.addFriend(friendId);
+
+        if (!friend.getFriends().add(id))
+            throw new FriendExistsException(friendId, id);
+        //friend.addFriend(id);
     }
 
     public void removeFriend(Long id, Long friendId) {
         User user1 = userStorage.getUser(id);
         User user2 = userStorage.getUser(friendId);
 
-        user1.removeFriend(friendId);
-        user2.removeFriend(id);
+        //user1.removeFriend(friendId);
+        user1.getFriends().remove(friendId);
+
+        //user2.removeFriend(id);
+        user2.getFriends().remove(id);
     }
 
     public Set<User> getCommonFriends(Long id, Long otherId) {

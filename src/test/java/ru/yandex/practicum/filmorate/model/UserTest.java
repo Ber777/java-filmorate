@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+import java.util.Collections;
 
 class UserTest {
     @Test
@@ -14,7 +15,8 @@ class UserTest {
         user1.setName("name1");
         user1.setEmail("email1@rambler.ru");
         user1.setBirthday(LocalDate.ofYearDay(2000, 1));
-        user1.addFriend(1L);
+        user1.setFriends(Collections.singleton(1L));
+        //user1.addFriend(1L);
 
         User user2 = new User();
         user2.setId(1L);
@@ -22,7 +24,8 @@ class UserTest {
         user2.setName("name1");
         user2.setEmail("email1@rambler.ru");
         user2.setBirthday(LocalDate.ofYearDay(2000, 1));
-        user2.addFriend(1L);
+        user2.setFriends(Collections.singleton(1L));
+        //user2.addFriend(1L);
 
         assertEquals(user1, user2);
     }

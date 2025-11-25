@@ -14,11 +14,12 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
+@RequestMapping("/users")  // вынесли на уровень класса
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/users")
+    @PostMapping
     public User create(@RequestBody @Validated(Create.class) User user) {
         log.info("Получен HTTP-запрос на создание пользователя: {}", user);
         User createdUser = userService.create(user);
@@ -26,7 +27,7 @@ public class UserController {
         return createdUser;
     }
 
-    @PutMapping("/users")
+    @PutMapping
     public User update(@RequestBody @Validated(Update.class) User user) {
         log.info("Получен HTTP-запрос на обновление пользователя: {}", user);
         User updatedUser = userService.update(user);
@@ -34,28 +35,28 @@ public class UserController {
         return updatedUser;
     }
 
-    @PutMapping("/users/{id}/friends/{friendId}")
+    @PutMapping(value = "/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
     public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userService.addFriend(id, friendId);
         log.info("Пользователь id:{} добавил в друзья пользователя id:{}", id, friendId);
     }
 
-    @DeleteMapping("/users/{id}/friends/{friendId}")
+    @DeleteMapping(value = "/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
     public void removeFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userService.removeFriend(id, friendId);
         log.info("Пользователь id:{} удалил из друзей пользователя id:{}", id, friendId);
     }
 
-    @GetMapping("/users/{id}/friends")
+    @GetMapping(value = "/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
     public Collection<User> getFriends(@PathVariable Long id) {
         log.info("Получен HTTP-запрос на получение списка друзей пользователя id:{}", id);
         return userService.getFriends(id);
     }
 
-    @GetMapping("/users/{id}/friends/common/{otherId}")
+    @GetMapping(value = "/{id}/friends/common/{otherId}")
     @ResponseStatus(HttpStatus.OK)
     public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         log.info("Получен HTTP-запрос на получение списка друзей пользователя id:{}, " +
@@ -63,13 +64,13 @@ public class UserController {
         return userService.getCommonFriends(id, otherId);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping(value = "/{id}")
     public User getUser(@PathVariable Long id) {
         log.info("Получен HTTP-запрос на получение пользователя по id:{}", id);
         return userService.getUser(id);
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public Collection<User> getAllUsers() {
         log.info("Получен HTTP-запрос на получение всех пользователей");
         return userService.getAllUsers();

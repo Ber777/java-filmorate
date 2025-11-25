@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+import java.util.Collections;
 
 class FilmTest {
     @Test
@@ -14,7 +15,8 @@ class FilmTest {
         film1.setDescription("description1");
         film1.setReleaseDate(now);
         film1.setDuration(10);
-        film1.addLike(2L);
+        film1.setLikes(Collections.singleton(2L));
+        //film1.addLike(2L);
 
         Film film2 = new Film();
         film2.setId(1L);
@@ -22,7 +24,8 @@ class FilmTest {
         film2.setDescription("description1");
         film2.setReleaseDate(now);
         film2.setDuration(10);
-        film2.addLike(2L);
+        film2.setLikes(Collections.singleton(2L));
+        //film2.addLike(2L);
 
         assertEquals(film1, film2);
     }

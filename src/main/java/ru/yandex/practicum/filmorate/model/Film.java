@@ -1,8 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import ru.yandex.practicum.filmorate.exception.LikeExistsException;
-import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotEmpty;
@@ -36,6 +33,7 @@ public class Film {
 
     private Set<Long> likes = new LinkedHashSet<>();
 
+    /* вынесли на уровень сервиса:
     public void addLike(Long userId) {
         if (!likes.add(userId))
             throw new LikeExistsException(id, userId);
@@ -48,5 +46,5 @@ public class Film {
 
     public void clearLikes() {
         likes.clear();
-    }
+    }*/
 }

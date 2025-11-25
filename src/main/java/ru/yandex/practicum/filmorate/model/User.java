@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import ru.yandex.practicum.filmorate.exception.FriendExistsException;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.NoArgsConstructor;
 import lombok.Data;
@@ -41,6 +39,7 @@ public class User {
 
     private Set<Long> friends = new HashSet<>();
 
+    /* вынесли на уровень сервиса
     public void addFriend(Long id) {
         if (!friends.add(id))
             throw new FriendExistsException(this.id, id);
@@ -53,4 +52,5 @@ public class User {
     public void clearFriends() {
         friends.clear();
     }
+     */
 }

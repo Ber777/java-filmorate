@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.service.Film;
 
+import ru.yandex.practicum.filmorate.exception.LikeExistsException;
+import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -17,14 +19,18 @@ public class FilmService {
     public Film addLike(Long id, Long userId) {
         Film film = filmStorage.getFilm(id);
         userStorage.getUser(userId);
-        film.addLike(userId);
+        if (!film.getLikes().add(userId))
+            throw new LikeExistsException(id, userId);
+        //film.addLike(userId);
         return film;
     }
 
     public Film removeLike(Long id, Long userId) {
         Film film = filmStorage.getFilm(id);
         userStorage.getUser(userId);
-        film.removeLike(userId);
+        if (!film.getLikes().remove(userId))
+            throw new LikeNotFoundException(id, userId);
+        //film.removeLike(userId);
         return film;
     }
 
@@ -41,7 +47,8 @@ public class FilmService {
     }
 
     public Film create(Film film) {
-        film.clearLikes();
+        //film.clearLikes();
+        film.getLikes().clear();
         return filmStorage.create(film);
     }
 
@@ -59,6 +66,10 @@ public class FilmService {
 
         if (film.getReleaseDate() != null)
             updatedFilm.setReleaseDate(film.getReleaseDate());
+
+        // Чтобы не потерять лайки
+        if (film.getLikes() != null)
+            updatedFilm.setLikes(film.getLikes());
 
         return filmStorage.update(updatedFilm);
     }

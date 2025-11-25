@@ -14,13 +14,14 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
+@RequestMapping("/films")  // вынесли на уровень класса
 @RequiredArgsConstructor
 public class FilmController {
     private static final LocalDate FIRST_FILM_RELEASE_DATE
             = LocalDate.of(1895, 12, 28);
     private final FilmService filmService;
 
-    @PostMapping("/films")
+    @PostMapping
     public Film create(@RequestBody @Valid Film film) {
         validate(film);
         log.info("Получен HTTP-запрос на добавления фильма: {}", film);
@@ -30,7 +31,7 @@ public class FilmController {
 
     }
 
-    @PutMapping("/films")
+    @PutMapping
     public Film update(@RequestBody @Valid Film film) {
         validate(film);
         log.info("Получен HTTP-запрос на обновление фильма: {}", film);
@@ -39,14 +40,14 @@ public class FilmController {
         return updatedFilm;
     }
 
-    @PutMapping("/films/{id}/like/{userId}")
+    @PutMapping(value = "/{id}/like/{userId}")
     public Film like(@PathVariable Long id, @PathVariable Long userId) {
         Film film = filmService.addLike(id, userId);
         log.info("Пользователт id:{} лайкнул фильм id:{}", userId, id);
         return film;
     }
 
-    @DeleteMapping("/films/{id}/like/{userId}")
+    @DeleteMapping(value = "/{id}/like/{userId}")
     public Film unLike(@PathVariable Long id, @PathVariable Long userId) {
         Film film = filmService.removeLike(id, userId);
         log.info("Пользователь id:{} удалил лайк с фильма id:{}", userId, id);
@@ -59,7 +60,7 @@ public class FilmController {
                     + FIRST_FILM_RELEASE_DATE.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
 
-    @GetMapping("/films/popular")
+    @GetMapping(value = "/popular")
     public Collection<Film> getTopFilms(@RequestParam(defaultValue = "10") int count) {
         log.info("Получен HTTP-запрос на получение топ фильмов.");
         if (count <= 0)
@@ -67,13 +68,13 @@ public class FilmController {
         return filmService.getTopFilms(count);
     }
 
-    @GetMapping("/films/{id}")
+    @GetMapping(value = "/{id}")
     public Film getFilm(@PathVariable Long id) {
         log.info("Получен HTTP-запрос на получение фильма по id:{}", id);
         return filmService.getFilm(id);
     }
 
-    @GetMapping("/films")
+    @GetMapping
     public Collection<Film> getAllFilms() {
         log.info("Получен HTTP-запрос на получение всех фильмов.");
         return filmService.getAllFilms();
