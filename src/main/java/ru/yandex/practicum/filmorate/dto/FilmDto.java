@@ -12,7 +12,7 @@ import java.util.Collection;
 public class FilmDto {
     public static final int MAX_DESCRIPTION_LENGTH = 200;
 
-    @NotEmpty(groups = Update.class)
+    @NotNull(groups = Update.class)
     private Long id;
 
     @NotEmpty(message = "Название фильма не может быть пустым")
@@ -25,10 +25,10 @@ public class FilmDto {
     private Integer duration;
 
     @Past
-    @NotEmpty(groups = Create.class)
+    @NotNull(groups = Create.class)
     private LocalDate releaseDate;
 
-    @NotEmpty(groups = Create.class)
+    @NotNull(groups = Create.class)
     private MpaDto mpa;
 
     private Collection<GenreDto> genres = null;

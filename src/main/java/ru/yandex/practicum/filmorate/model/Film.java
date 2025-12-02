@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +19,8 @@ public class Film {
     private LocalDate releaseDate;
     private Mpa mpa;
 
-    private Collection<Genre> genres = List.of();
+    // List.of() - не рекоммендуется, запомню, спасибо!
+    private Collection<Genre> genres = new HashSet<>();  // = List.of();
 
     public Film(String name, String description, Integer duration, LocalDate releaseDate, Mpa mpa) {
         this.name = name;
