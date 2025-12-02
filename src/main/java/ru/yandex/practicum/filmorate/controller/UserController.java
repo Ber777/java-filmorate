@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import ru.yandex.practicum.filmorate.dto.UserCreateDto;
+import ru.yandex.practicum.filmorate.dto.UserResponseDto;
+import ru.yandex.practicum.filmorate.dto.UserUpdateDto;
 import ru.yandex.practicum.filmorate.model.Create;
 import ru.yandex.practicum.filmorate.model.Update;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.User.UserService;
 
 import org.springframework.web.bind.annotation.*;
@@ -14,23 +16,23 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")  // вынесли на уровень класса
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User create(@RequestBody @Validated(Create.class) User user) {
+    public UserResponseDto create(@RequestBody @Validated(Create.class) UserCreateDto user) {
         log.info("Получен HTTP-запрос на создание пользователя: {}", user);
-        User createdUser = userService.create(user);
+        UserResponseDto createdUser = userService.create(user);
         log.info("Пользователь id:{} был добавлен: {}", createdUser.getId(), createdUser);
         return createdUser;
     }
 
     @PutMapping
-    public User update(@RequestBody @Validated(Update.class) User user) {
+    public UserResponseDto update(@RequestBody @Validated(Update.class) UserUpdateDto user) {
         log.info("Получен HTTP-запрос на обновление пользователя: {}", user);
-        User updatedUser = userService.update(user);
+        UserResponseDto updatedUser = userService.update(user);
         log.info("Пользователь id:{} был обновлен: {}", updatedUser.getId(), updatedUser);
         return updatedUser;
     }
@@ -51,27 +53,27 @@ public class UserController {
 
     @GetMapping(value = "/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<User> getFriends(@PathVariable Long id) {
+    public Collection<UserResponseDto> getFriends(@PathVariable Long id) {
         log.info("Получен HTTP-запрос на получение списка друзей пользователя id:{}", id);
         return userService.getFriends(id);
     }
 
     @GetMapping(value = "/{id}/friends/common/{otherId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+    public Collection<UserResponseDto> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         log.info("Получен HTTP-запрос на получение списка друзей пользователя id:{}, " +
                 "общих с другим пользователем id:{}", id, otherId);
         return userService.getCommonFriends(id, otherId);
     }
 
     @GetMapping(value = "/{id}")
-    public User getUser(@PathVariable Long id) {
+    public UserResponseDto getUser(@PathVariable Long id) {
         log.info("Получен HTTP-запрос на получение пользователя по id:{}", id);
         return userService.getUser(id);
     }
 
     @GetMapping
-    public Collection<User> getAllUsers() {
+    public Collection<UserResponseDto> getAllUsers() {
         log.info("Получен HTTP-запрос на получение всех пользователей");
         return userService.getAllUsers();
     }

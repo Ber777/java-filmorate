@@ -1,50 +1,29 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.NoArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
 
-/**
- * Film.
- */
-//@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class Film {
-    public static final int MAX_DESCRIPTION_LENGTH = 200;
     private Long id;
-
-    @NotEmpty(message = "Название фильма не может быть пустым")
     private String name;
-
-    @Size(max = MAX_DESCRIPTION_LENGTH, message = "Максимальная длина описания — 200 символов")
     private String description;
-
-    private LocalDate releaseDate;
-
-    @Min(value = 1, message = "Продолжительность фильма должна быть положительным числом")
     private Integer duration;
+    private LocalDate releaseDate;
+    private Mpa mpa;
 
-    private Set<Long> likes = new LinkedHashSet<>();
+    private Collection<Genre> genres = List.of();
 
-    /* вынесли на уровень сервиса:
-    public void addLike(Long userId) {
-        if (!likes.add(userId))
-            throw new LikeExistsException(id, userId);
+    public Film(String name, String description, Integer duration, LocalDate releaseDate, Mpa mpa) {
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.releaseDate = releaseDate;
+        this.mpa = mpa;
     }
-
-    public void removeLike(Long userId) {
-        if (!likes.remove(userId))
-            throw new LikeNotFoundException(id, userId);
-    }
-
-    public void clearLikes() {
-        likes.clear();
-    }*/
 }
