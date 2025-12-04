@@ -59,8 +59,6 @@ public class FilmController {
 
     private void validate(FilmDto film) throws ValidationException {
         if (film.getReleaseDate() == null)
-            // Действительно, лучше выбросим исключение, уведомив об ошибке в данных
-            //return;
             throw new ValidationException("Дата релиза не может отсутствовать");
 
         if (film.getReleaseDate().isBefore(FIRST_FILM_RELEASE_DATE))

@@ -17,8 +17,7 @@ public class FilmMapper {
         film.setDescription(request.getDescription());
         film.setReleaseDate(request.getReleaseDate());
         film.setDuration(request.getDuration());
-        film.setMpa(mpaDto);  // Чтобы не создавать избыточный объект:
-        //film.setMpa(new Mpa(request.getMpa().getId(), mpaDto.getName()));
+        film.setMpa(mpaDto);
 
         if (request.getGenres() != null) {
             film.setGenres(
