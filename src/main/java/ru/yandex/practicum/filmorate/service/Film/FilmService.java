@@ -1,76 +1,83 @@
 package ru.yandex.practicum.filmorate.service.Film;
 
-import ru.yandex.practicum.filmorate.exception.LikeExistsException;
-import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.util.Collection;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.FilmResponseDto;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FilmService {
-    private final UserStorage userStorage;
     private final FilmStorage filmStorage;
+    private final MpaStorage mpaStorage;
 
-    public Film addLike(Long id, Long userId) {
+    public Collection<FilmResponseDto> getTopFilms(int count) {
+        return filmStorage.getTopFilms(count).stream()
+                .map(FilmMapper::mapToFilmDto)
+                .toList();
+    }
+
+    public Collection<FilmResponseDto> getAllFilms() {
+        return filmStorage.getAllFilms().stream()
+                .map(FilmMapper::mapToFilmDto)
+                .toList();
+    }
+
+    public FilmResponseDto getFilm(Long id) {
         Film film = filmStorage.getFilm(id);
-        userStorage.getUser(userId);
-        if (!film.getLikes().add(userId))
-            throw new LikeExistsException(id, userId);
-        //film.addLike(userId);
-        return film;
+        return FilmMapper.mapToFilmDto(film);
     }
 
-    public Film removeLike(Long id, Long userId) {
-        Film film = filmStorage.getFilm(id);
-        userStorage.getUser(userId);
-        if (!film.getLikes().remove(userId))
-            throw new LikeNotFoundException(id, userId);
-        //film.removeLike(userId);
-        return film;
+    public FilmResponseDto create(FilmDto filmDto) {
+        Mpa mpa = mpaStorage.getMpa(filmDto.getMpa().getId());
+
+        log.info("filmDto = {}", filmDto);
+        Film film = FilmMapper.mapToFilm(filmDto, mpa);
+
+        log.info("film = {}", film);
+        Film created = filmStorage.create(film);
+        return FilmMapper.mapToFilmDto(created);
     }
 
-    public Collection<Film> getTopFilms(int count) {
-        return filmStorage.getTopFilms(count);
-    }
+    public FilmResponseDto update(FilmDto film) {
 
-    public Collection<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
-    }
+        Film origin = filmStorage.getFilm(film.getId());
+        if (film.getName() != null) {
+            origin.setName(film.getName());
+        }
 
-    public Film getFilm(Long id) {
-        return filmStorage.getFilm(id);
-    }
+        if (film.getDuration() != null) {
+            origin.setDuration(film.getDuration());
+        }
 
-    public Film create(Film film) {
-        //film.clearLikes();
-        film.getLikes().clear();
-        return filmStorage.create(film);
-    }
+        if (film.getDescription() != null) {
+            origin.setDescription(film.getDescription());
+        }
 
-    public Film update(Film film) {
+        if (film.getReleaseDate() != null) {
+            origin.setReleaseDate(film.getReleaseDate());
+        }
 
-        Film updatedFilm = filmStorage.getFilm(film.getId());
-        if (film.getName() != null)
-            updatedFilm.setName(film.getName());
+        if (film.getMpa() != null) {
+            origin.setMpa(mpaStorage.getMpa(film.getMpa().getId()));
+        }
 
-        if (film.getDuration() != null)
-            updatedFilm.setDuration(film.getDuration());
+        if (film.getGenres() != null) {
+            origin.setGenres(film.getGenres().stream()
+                    .map(genreDto -> new Genre(genreDto.getId(), genreDto.getName()))
+                    .toList());
+        }
 
-        if (film.getDescription() != null)
-            updatedFilm.setDescription(film.getDescription());
-
-        if (film.getReleaseDate() != null)
-            updatedFilm.setReleaseDate(film.getReleaseDate());
-
-        // Чтобы не потерять лайки
-        if (film.getLikes() != null)
-            updatedFilm.setLikes(film.getLikes());
-
-        return filmStorage.update(updatedFilm);
+        Film updated = filmStorage.update(origin);
+        return FilmMapper.mapToFilmDto(updated);
     }
 }
